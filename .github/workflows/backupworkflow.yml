@@ -1,0 +1,33 @@
+name: Backup Windows Folder
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  backup:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Create backup folder
+        run: |
+          $backupFolderPath = 'C:\path\to\backup\folder'
+          New-Item -ItemType Directory -Force -Path $backupFolderPath
+
+      - name: Backup folder
+        run: |
+          $folderToBackup = 'C:\path\to\folder\to\backup'
+          $backupFolderPath = 'C:\path\to\backup\folder'
+          Copy-Item -Path $folderToBackup -Destination $backupFolderPath -Recurse
+          
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Backup folder"
+          git push
