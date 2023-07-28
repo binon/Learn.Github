@@ -1,29 +1,21 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: Check Latest NuGet Package Version
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  check-version:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-         
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Get Latest Package Version
       id: get_version
-      run: echo "::set-output name=latest_version::$(dotnet show package_name -n PackageName -v n)"
+      run: echo "::set-output name=latest_version::$(dotnet show PackageName -n Example.Action -v n)"
 
     - name: Print Latest Package Version
       run: echo "Latest Version: ${{ steps.get_version.outputs.latest_version }}"
